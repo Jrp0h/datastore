@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <fmt/format.h>
 
 class Logger {
 public:
@@ -13,8 +14,8 @@ public:
         FATAL
     };
 
-    static void log_files(Level level, const char* component, const char* message, std::string file, int line, bool error = false);
-    static void log(Level level, const char* component, const char* message, bool error = false);
+    static void log_files(Level level, const char* component, std::string message, std::string file, int line, bool error = false);
+    static void log(Level level, const char* component, std::string message, bool error = false);
 };
 
 #ifdef DS_DEBUG
@@ -23,8 +24,8 @@ public:
 #define LOG_DEBUG(c, m) ;
 #endif
 
-#define LOG_TRACE(component, message) Logger::log(Logger::TRACE, component, message);
-#define LOG_INFO(component, message) Logger::log(Logger::INFO, component, message);
-#define LOG_WARN(component, message) Logger::log(Logger::WARN, component, message);
-#define LOG_ERROR(component, message) Logger::log(Logger::ERROR, component, message, true);
-#define LOG_FATAL(component, message) { Logger::log_files(Logger::FATAL, component, message, __FILE__, __LINE__, true); ::exit(1); }
+#define LOG_TRACE(component, ...) Logger::log(Logger::TRACE, component, fmt::format(__VA_ARGS__));
+#define LOG_INFO(component, ...) Logger::log(Logger::INFO, component, fmt::format(__VA_ARGS__));
+#define LOG_WARN(component, ...) Logger::log(Logger::WARN, component, fmt::format(__VA_ARGS__));
+#define LOG_ERROR(component, ...) Logger::log(Logger::ERROR, component, fmt::format(__VA_ARGS__), true);
+#define LOG_FATAL(component, ...) { Logger::log_files(Logger::FATAL, component, fmt::format(__VA_ARGS__), __FILE__, __LINE__, true); ::exit(1); }

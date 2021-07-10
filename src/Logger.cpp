@@ -4,79 +4,43 @@
 #include <iostream>
 #include <iomanip>
 #include <ctime>
+#include <fmt/core.h>
+#include <fmt/chrono.h>
 
-void Logger::log_files(Level level, const char* component, const char* message, std::string file, int line, bool error){
-    std::stringstream ss;
-    
-    ss << "[";
+#define LEVEL_CASE(level) case level: type = "" #level; break; 
+
+void Logger::log_files(Level level, const char* component, std::string message, std::string file, int line, bool error){
+    std::string type;
 
     switch(level) {
-        case Level::DEBUG:
-            ss << "DEBUG";
-            break;
-        case Level::TRACE:
-            ss << "TRACE";
-            break;
-        case Level::INFO:
-            ss << "INFO";
-            break;
-        case Level::WARN:
-            ss << "WARN";
-            break;
-        case Level::ERROR:
-            ss << "ERROR";
-            break;
-        case Level::FATAL:
-            ss << "FATAL";
-            break;
+        LEVEL_CASE(DEBUG)
+        LEVEL_CASE(TRACE)
+        LEVEL_CASE(INFO)
+        LEVEL_CASE(WARN)
+        LEVEL_CASE(ERROR)
+        LEVEL_CASE(FATAL)
     }
 
-    ss << "] [" << component << "] [" << file << ":" << line << "] [";
+    std::string ss = fmt::format("[{}] [{}] [{}:{}] [{:%H:%M:%S}] {}", type, component, file, line, fmt::localtime(std::time(nullptr)), message);
 
-    auto t = std::time(nullptr);
-    ss << std::put_time(std::localtime(&t), "%H:%M:%S") << "] ";
-    ss << message << std::endl;
-
-    if(error)
-        std::cerr << ss.str();
-    else
-        std::cout << ss.str();
+    if(error) std::cerr << ss << std::endl;
+    else std::cout << ss << std::endl;
 
 }
-void Logger::log(Level level, const char* component, const char* message, bool error) {
-    std::stringstream ss;
-    
-    ss << "[";
+void Logger::log(Level level, const char* component, std::string message, bool error) {
+    std::string type;
 
     switch(level) {
-        case Level::DEBUG:
-            ss << "DEBUG";
-            break;
-        case Level::TRACE:
-            ss << "TRACE";
-            break;
-        case Level::INFO:
-            ss << "INFO";
-            break;
-        case Level::WARN:
-            ss << "WARN";
-            break;
-        case Level::ERROR:
-            ss << "ERROR";
-            break;
-        case Level::FATAL:
-            ss << "FATAL";
-            break;
+        LEVEL_CASE(DEBUG)
+        LEVEL_CASE(TRACE)
+        LEVEL_CASE(INFO)
+        LEVEL_CASE(WARN)
+        LEVEL_CASE(ERROR)
+        LEVEL_CASE(FATAL)
     }
 
-    ss << "] [" << component << "] [";
+    std::string ss = fmt::format("[{}] [{}] [{:%H:%M:%S}] {}", type, component, fmt::localtime(std::time(nullptr)), message);
 
-    auto t = std::time(nullptr);
-    ss << std::put_time(std::localtime(&t), "%H:%M:%S") << "] ";
-    ss << message << std::endl;
-
-    if(error)
-        std::cerr << ss.str();
-    else
-        std::cout << ss.str();
+    if(error) std::cerr << ss << std::endl;
+    else std::cout << ss << std::endl;
 }

@@ -55,10 +55,7 @@ public:
             TYPE_TO_STRING(DATABASE_WHICH)
         }
 
-        char id[5];
-        sprintf(id, "%d", (int)type);
-
-        LOG_TRACE("Action::get_type_as_string", id)
+        LOG_TRACE("Action::get_type_as_string", "{}", (int)type)
         LOG_FATAL("Action::get_type_as_string", "UNKNOW TYPE")
     }
 

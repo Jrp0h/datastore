@@ -211,14 +211,7 @@ Token Parser::eat(Token::Type expected) {
     Token t = m_statement[m_current_token++];
 
     if(t != expected) {
-        auto str_exprected = Token::get_type_as_string(expected);
-        auto str_got = t.get_type_as_string();
-
-        // TODO: Use {fmt} instead
-        std::stringstream ss;
-        ss << "Expected \"" << str_exprected << "\", Got \"" << str_got << "\" " << t.get_content();
-
-        LOG_FATAL("Parser::eat", ss.str().c_str())
+        LOG_FATAL("Parser::eat", "Expected {}, Got {} with value {}", Token::get_type_as_string(expected), t.get_type_as_string(), t.get_content())
     }
 
     return t;
