@@ -49,6 +49,11 @@ endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+# External
+add_subdirectory(vendor/fmt)
+target_include_directories(${PROJECT_NAME} PUBLIC vendor/fmt/include)
+target_link_libraries(${PROJECT_NAME} fmt::fmt)
+
 find_package (Threads REQUIRED)
 target_link_libraries(${PROJECT_NAME}
     ${CMAKE_THREAD_LIBS_INIT}

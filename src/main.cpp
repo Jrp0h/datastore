@@ -9,6 +9,8 @@
 #include "Language/Token.h"
 #include "Language/Parser.h"
 
+#include <fmt/core.h>
+
 int main() {
     // Datastore ds;
 
