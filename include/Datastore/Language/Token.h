@@ -1,5 +1,9 @@
 #pragma once
 
+
+#include "Logger.h"
+#include "Macros.h"
+
 #include <iostream>
 #include <string>
 
@@ -24,23 +28,27 @@ public:
     Type get_type() const { return m_type; }
     std::string get_content() const { return m_content; }
 
+    static std::string get_type_as_string(Type type) {
+        switch(type) {
+            TYPE_TO_STRING(IDENTIFIER)
+            TYPE_TO_STRING(EQUAL)
+            TYPE_TO_STRING(COMMA)
+            TYPE_TO_STRING(DATA)
+            TYPE_TO_STRING(SEMICOLON)
+            TYPE_TO_STRING(COLON)
+            TYPE_TO_STRING(NUMBER)
+            TYPE_TO_STRING(E_O_F)
+        }
+
+        LOG_FATAL("Token::get_type_as_string", "UNKNOW TOKEN")
+    }
+
+    std::string get_type_as_string() const { return get_type_as_string(m_type); }
+
     friend std::ostream& operator<<(std::ostream& cout, Token& t) {
         cout << "Token(";
 
-        std::string type = "E_O_F";
-
-        #define TOKEN_CASE(t) { case t: type = "" #t; break; }
-
-        switch(t.m_type) {
-            TOKEN_CASE(IDENTIFIER)
-            TOKEN_CASE(EQUAL)
-            TOKEN_CASE(COMMA)
-            TOKEN_CASE(DATA)
-            TOKEN_CASE(SEMICOLON)
-            TOKEN_CASE(COLON)
-            TOKEN_CASE(NUMBER)
-            TOKEN_CASE(E_O_F)
-        }
+        std::string type = t.get_type_as_string();
 
         if(t.m_type == E_O_F)
            cout << type << ")";

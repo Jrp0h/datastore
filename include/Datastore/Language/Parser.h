@@ -25,6 +25,9 @@ private:
     void continue_with_create(Action* action);
 
     void capture_variables(Action* action);
+    void capture_where(Action* action);
+    void capture_mods(Action* action);
+    void capture_columns(Action* action);
 
     Action parse_database_select();
 
