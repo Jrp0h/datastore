@@ -1,4 +1,6 @@
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 #include "Datastore.h"
 #include "TTL.h"
@@ -9,12 +11,20 @@
 #include "Language/Token.h"
 #include "Language/Parser.h"
 
+#include "Network/Server.h"
+
 #include <fmt/core.h>
 
 int main() {
-    // Datastore ds;
 
-    // ds.boot();
+    Network::Server server;
+    server.start();
+
+    Datastore ds;
+
+    ds.boot();
+
+    std::cin.get();
     
     // Language::Lexer l("TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";");
     // Language::Lexer l("DEFINE TABLE dead_drop:450 WITH message MOD :ONE_TOUCH;");
@@ -36,37 +46,37 @@ int main() {
     // Language::Parser p("DEFINE TABLE user_auth:300 WITH user_id, token MOD :POKE;");
     // Language::Parser p("DEFINE TABLE posts WITH post_id, description, title;");
     // Language::Parser p("DEFINE TABLE dead_drop:450 WITH message MOD :ONE_TOUCH;");
-    Language::Parser p("DEFINE TABLE key_value_pair WITH key, value;");
+    // Language::Parser p("DEFINE TABLE key_value_pair WITH key, value;");
 
-    Language::Action a = p.parse();
+    // Language::Action a = p.parse();
 
-    std::cout << "Type: " << a.get_type_as_string() << std::endl;
-    std::cout << "DB Index: " << a.get_database_index() << std::endl;
+    // std::cout << "Type: " << a.get_type_as_string() << std::endl;
+    // std::cout << "DB Index: " << a.get_database_index() << std::endl;
 
-    std::cout << "Table name: " << a.get_table_name() << std::endl;
+    // std::cout << "Table name: " << a.get_table_name() << std::endl;
 
-    if(a.get_table_ttl()) std::cout << "TTL: " << *a.get_table_ttl() << std::endl;
-    else std::cout << "TTL: No TTL" << std::endl;
+    // if(a.get_table_ttl()) std::cout << "TTL: " << *a.get_table_ttl() << std::endl;
+    // else std::cout << "TTL: No TTL" << std::endl;
 
-    std::cout << "Variables:" << std::endl;
-    for(auto& var : a.get_table_variables()) {
-        std::cout << "\t" << var.first << ": " << var.second << std::endl;
-    }
+    // std::cout << "Variables:" << std::endl;
+    // for(auto& var : a.get_table_variables()) {
+        // std::cout << "\t" << var.first << ": " << var.second << std::endl;
+    // }
 
-    std::cout << "WHERE:" << std::endl;
-    for(auto& var : a.get_table_where()) {
-        std::cout << "\t" << var.first << ": " << var.second << std::endl;
-    }
+    // std::cout << "WHERE:" << std::endl;
+    // for(auto& var : a.get_table_where()) {
+        // std::cout << "\t" << var.first << ": " << var.second << std::endl;
+    // }
 
-    std::cout << "MODS:" << std::endl;
-    for(auto& var : a.get_table_mods()) {
-        std::cout << "\t" << var << std::endl;
-    }
+    // std::cout << "MODS:" << std::endl;
+    // for(auto& var : a.get_table_mods()) {
+        // std::cout << "\t" << var << std::endl;
+    // }
 
-    std::cout << "Columns:" << std::endl;
-    for(auto& var : a.get_table_columns()) {
-        std::cout << "\t" << var << std::endl;
-    }
+    // std::cout << "Columns:" << std::endl;
+    // for(auto& var : a.get_table_columns()) {
+        // std::cout << "\t" << var << std::endl;
+    // }
 
     // auto tokens = l.get_all_tokens();
 

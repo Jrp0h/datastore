@@ -33,6 +33,9 @@ set(SOURCE_FILES
     src/Language/Action.cpp
     src/Language/Parser.cpp
     src/Language/Lexer.cpp
+
+    # Networking
+    src/Network/Server.cpp
 )
 
 if(DS_DEBUG)

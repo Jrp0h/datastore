@@ -25,8 +25,12 @@ void Datastore::shutdown() {
 
     m_should_shutdown = true;
 
-    if(m_ttl_worker)
+    if(m_ttl_worker) {
+        LOG_INFO("Datastore::shutdown", "Waiting for worker to shutdown")
         m_ttl_worker->join();
+    }
+
+    LOG_INFO("Datastore::shutdown", "Datastore has been shutdown")
 }
 
 void Datastore::persist() {}
@@ -35,7 +39,7 @@ void Datastore::t_clean_ttl() {
     using namespace std::literals::chrono_literals;
 
     while(!m_should_shutdown) {
-        LOG_INFO("Datastore::t_clean_ttl", "Cleaning TTL")
+        // LOG_INFO("Datastore::t_clean_ttl", "Cleaning TTL")
         std::this_thread::sleep_for(1s);
     }
 }
