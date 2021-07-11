@@ -36,6 +36,9 @@ set(SOURCE_FILES
 
     # Networking
     src/Network/Server.cpp
+
+    # Datastructures
+    src/Datastructure/LinkedList.cpp
 )
 
 if(DS_DEBUG)
