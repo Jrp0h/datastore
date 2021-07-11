@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Record.h"
+#include "Datastructure/LinkedList.h"
 
 #include <vector>
 #include <optional>
@@ -12,19 +13,13 @@ public:
     Table() {
         std::cout << "Empty constructor called" << std::endl;
     }
-    // Table(const Table& t) {
-        // m_records = t.m_records;
-        // m_ttl = t.m_ttl;
-        // m_one_touch = t.m_one_touch;
-        // m_columns = t.m_columns;
-    // }
 
     Table(std::vector<std::string> columns, std::optional<int> ttl = {}, bool has_one_touch = false, bool has_poke = false);
 
     void add_record(Record record);
 
-    const std::vector<Record>* get_records() const { return &m_records; }
-    std::vector<Record>* get_records() { return &m_records; }
+    const Datastructure::LinkedList<Record>* get_records() const { return &m_records; }
+    Datastructure::LinkedList<Record>* get_records() { return &m_records; }
 
     std::optional<int> get_ttl() const { return m_ttl; }
     bool has_one_touch() const { return m_one_touch; }
@@ -34,7 +29,7 @@ public:
 private:
     friend Record;
 
-    std::vector<Record> m_records;
+    Datastructure::LinkedList<Record> m_records;
     std::optional<int> m_ttl; 
     bool m_one_touch;
     bool m_poke;

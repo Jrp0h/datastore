@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TTL.h"
+#include "Datastructure/LinkedList.h"
 
 #include <unordered_map>
 #include <string>
@@ -11,12 +12,12 @@ class Table;
 class Record {
 public:
     // first = column, second = data
-    using DataType = std::unordered_map<std::string, std::optional<std::string>>;
+    using DataType = Datastructure::LinkedList<std::optional<std::string>>;
 
 public:
     Record(Table* parent);
-    Record(Table* parent, DataType data);
-    Record(DataType data);
+    Record(Table* parent, std::unordered_map<std::string, std::optional<std::string>> data);
+    Record(std::unordered_map<std::string, std::optional<std::string>> data);
 
     std::optional<std::string> get_value(std::string column);
 
