@@ -33,7 +33,6 @@ void Server::start() {
     bind(m_socket, (struct sockaddr*) &address, sizeof(address));
 
     m_listener = new std::thread([&]{this->t_listen();});
-
 }
 
 void Server::stop() {
@@ -57,7 +56,6 @@ void Server::t_listen() {
     while(m_is_open) { 
         LOG_INFO("Server::t_listen", "Server is accepting clients")
         int client_socket = accept(m_socket, NULL, NULL);
-        LOG_INFO("Server::t_listen", "AAAAAAAAAAAAAAAAAAAAA")
 
         if(client_socket == -1 && m_is_open) {
             LOG_ERROR("Server::t_listen", "Failed to accept a client")
@@ -70,6 +68,10 @@ void Server::t_listen() {
         LOG_INFO("Server::t_listen", "Client has been accepted on socket {}", client_socket);
 
         m_clients[client_socket] = (new std::thread([&]{
+
+            char* query_buffer = new char[64];
+            int query_buffer_size = 64;
+
             while(m_is_open) {
                 char next_message_size[32];  
 
@@ -90,14 +92,20 @@ void Server::t_listen() {
                 int size;
                 try {
                     size = std::stoi(next_message_size);
-                } catch(std::exception e) {
-                    LOG_WARN("Server::t_listen::client_thread", "Failed to parse size")
+                } catch(std::exception& e) {
+                    LOG_WARN("Server::t_listen::client_thread", "Failed to parse size. {}", e.what())
                     continue;
                 }
 
-                char buffer[4096];
-                res = read(client_socket, &buffer, size);
-                buffer[size] = '\0';
+                if(size >= query_buffer_size) {
+                    LOG_DEBUG("Server::t_listen::client_thread", "Resizing query_buffer from {} to {}", query_buffer_size, size + 1)
+                    delete[] query_buffer;
+                    query_buffer = new char[size + 1];
+                    query_buffer_size = size + 1;
+                }
+
+                res = read(client_socket, query_buffer, size);
+                query_buffer[size] = '\0';
 
                 if(res == 0) {
                     LOG_INFO("Server::t_listen::client_thread", "Connection with client closed")
@@ -112,9 +120,11 @@ void Server::t_listen() {
                 else {
                     // TODO: hook up do datastore and run query
                     //       send back proper response
-                    fmt::print("Received query client: {}\n", buffer);
+                    fmt::print("Received query client: {}\n", query_buffer);
                 }
             }
+
+            delete[] query_buffer;
         }));
     }
 

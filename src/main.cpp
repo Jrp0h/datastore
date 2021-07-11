@@ -22,6 +22,8 @@ int main() {
 
     Datastore ds;
 
+    fmt::print("{}\n", sizeof(char));
+
     ds.boot();
 
     std::cin.get();

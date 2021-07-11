@@ -7,8 +7,8 @@ namespace Network {
 
 class Server {
 public:
-    Server(int port = 1278) 
-        : m_port(port) {}
+    Server(int port = 1278, int max_clients = 5) 
+        : m_port(port), m_max_clients(max_clients) {}
     ~Server();
 
     void start();
@@ -19,6 +19,7 @@ private:
     void kill_socket(int socket_fd);
 private:
     int m_port;
+    int m_max_clients;
     int m_socket;
     bool m_is_open;
 

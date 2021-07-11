@@ -19,9 +19,9 @@ public:
 };
 
 #ifdef DS_DEBUG
-#define LOG_DEBUG(component, message) Logger::log_files(Logger::DEBUG, component, message, __FILE__, __LINE__);
+#define LOG_DEBUG(component, ...) Logger::log_files(Logger::DEBUG, component, fmt::format(__VA_ARGS__), __FILE__, __LINE__);
 #else
-#define LOG_DEBUG(c, m) ;
+#define LOG_DEBUG(c, ...) ;
 #endif
 
 #define LOG_TRACE(component, ...) Logger::log(Logger::TRACE, component, fmt::format(__VA_ARGS__));
