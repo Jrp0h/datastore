@@ -75,6 +75,7 @@ int main() {
         // std::cout << "\t" << var << std::endl;
     // }
 
+
     // std::cout << "Columns:" << std::endl;
     // for(auto& var : a.get_table_columns()) {
         // std::cout << "\t" << var << std::endl;

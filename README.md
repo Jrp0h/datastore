@@ -24,8 +24,8 @@ First one is a 2 byte code which describes what will come.
 
 ex.
 
--   DT - Means that data will come.
--   SX - Means invalid syntax
+- DT - Means that data will come.
+- SE - Means invalid syntax
 
 Second one is the size of the data/message/whatever may come.
 

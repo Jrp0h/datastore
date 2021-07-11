@@ -23,13 +23,16 @@ class Client:
         self.client.send(send_length)
         self.client.send(message)
 
+    def recv(self, size):
+        return self.client.recv(size);
+
 
 def main():
 
     queries = [
         "TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
         "DESTROY user_auth;",
-        "DEFINE TABLE user_auth:300 WITH user_id, token MOD :POKE;",
+        "DEFINE TABLE user_auth:300 user WITH_id, token MOD :POKE;",
         "SELECT 7;",
         "DESTROY user_auth;",
         "FROM user_auth DELETE WHERE toke=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
@@ -43,6 +46,18 @@ def main():
 
     while(True):
         c.send(queries[random.randint(0, len(queries) - 1)])
+
+        code = c.recv(2).decode('ascii')
+        print(code)
+        bufsize = int(c.recv(32).decode('ascii'))
+        print(bufsize)
+
+        msg = c.recv(bufsize).decode('ascii')
+
+        print(f"{code=}")
+        print(f"{bufsize=}")
+        print(f"{msg=}")
+
         time.sleep(4)
         #  pass
 

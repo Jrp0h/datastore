@@ -36,6 +36,7 @@ set(SOURCE_FILES
 
     # Networking
     src/Network/Server.cpp
+    src/Network/Response.cpp
 
     # Datastructures
     src/Datastructure/LinkedList.cpp

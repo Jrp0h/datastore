@@ -1,6 +1,7 @@
 #include "Network/Server.h"
 
 #include "Logger.h"
+#include "Network/Response.h"
 
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -121,6 +122,8 @@ void Server::t_listen() {
                     // TODO: hook up do datastore and run query
                     //       send back proper response
                     fmt::print("Received query client: {}\n", query_buffer);
+                    Response response(Response::DATA, "here is the data you requested");
+                    response.send(client_socket);
                 }
             }
 
