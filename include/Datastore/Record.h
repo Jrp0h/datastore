@@ -20,6 +20,7 @@ public:
     Record(std::unordered_map<std::string, std::optional<std::string>> data);
 
     std::optional<std::string> get_value(std::string column);
+    std::optional<TimeToLive> get_ttl();
 
 private:
     friend Table;

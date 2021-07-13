@@ -73,6 +73,8 @@ Network::Response Datastore::handle_query(int client_socket, const char* query) 
         return handle_table_definition(action, database);
     else if (action.get_type() == Language::Action::TABLE_INSERT)
         return handle_table_insert(action, database);
+    else if (action.get_type() == Language::Action::TABLE_READ)
+        return handle_table_read(action, database);
     else
         return Response(Response::DATA, fmt::format("Action {} is not yet implemented", action.get_type_as_string()));
 }
@@ -132,4 +134,83 @@ Network::Response Datastore::handle_table_insert(Language::Action& action, int& 
     LOG_DEBUG("Datastore::handle_table_insert", "Record addded to {}", table_name)
 
     return Network::Response(Network::Response::TABLE_ROW_INSERTED, fmt::format("Row has been inserted into table {}", table_name));
+}
+Network::Response Datastore::handle_table_read(Language::Action& action, int& database_id) {
+    auto table_name = action.get_table_name();
+    auto table_where = action.get_table_where();
+    auto table_mods = action.get_table_mods();
+
+    bool with_ttl = false;
+    bool one = false;
+
+    for (auto& mod : table_mods) {
+        fmt::print("MOD: {}\n", mod);
+        if (mod == "ONE")
+            one = true;
+        else if (mod == "WITH_TTL") {
+            with_ttl = true;
+        }
+    }
+
+    auto& db = m_databases[database_id];
+    auto* table = db.get_table(table_name);
+
+    auto* records = table->get_records();
+
+    std::string m_rows;
+
+    for (auto& col : table->get_columns()) {
+        fmt::print("COLUMNS: {}\n", col);
+        m_rows += fmt::format("{},", col);
+    }
+
+    if (with_ttl) {
+        fmt::print("ADDING :TLL columns\n");
+        m_rows += ":TTL";
+    } else {
+        m_rows = m_rows.substr(0, m_rows.size() - 1);
+        fmt::print("REMOVING LAST , \n");
+    }
+
+    m_rows += "\n";
+
+    for (auto* current = records->get_head(); current != nullptr; current = current->get_next()) {
+        bool matched = true;
+
+        for (auto& cond : table_where) {
+            if (current->get_data().get_value(cond.first) != cond.second) {
+                matched = false;
+                break;
+            }
+        }
+
+        if (matched) {
+            auto ttl = current->get_data().get_ttl();
+
+            if (ttl && ttl->life_left() <= 0)
+                continue;
+
+            std::string row = "";
+            for (auto& col : table->get_columns()) {
+                if (current->get_data().get_value(col))
+                    row += fmt::format("\"{}\",", current->get_data().get_value(col).value());
+                else
+                    row += fmt::format("NULL");
+            }
+
+            if (with_ttl) {
+                if (ttl)
+                    row += fmt::format("{},", ttl->life_left());
+                else
+                    row += fmt::format("NO TTL,");
+            }
+
+            m_rows += row.substr(0, row.size() - 1) + "\n";
+
+            if (one)
+                break;
+        }
+    }
+
+    return Network::Response(Network::Response::DATA, m_rows);
 }

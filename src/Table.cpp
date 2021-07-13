@@ -12,5 +12,6 @@ Table::Table(std::vector<std::string> columns, std::optional<int> ttl, bool has_
 void Table::add_record(Record record) {
     LOG_DEBUG("Table::add_record", "Adding new record")
     record.m_parent = this;
+    record.m_ttl = this->get_ttl();
     m_records.push_back("0", record);
 }

@@ -165,7 +165,7 @@ public:
         return node;
     }
 
-    LinkedList<T>* get_head() {
+    LinkedListNode<T>* get_head() {
         return m_head;
     }
 

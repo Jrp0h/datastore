@@ -31,3 +31,7 @@ std::optional<std::string> Record::get_value(std::string column) {
 
     return *data;
 }
+
+std::optional<TimeToLive> Record::get_ttl() {
+    return m_ttl;
+}
