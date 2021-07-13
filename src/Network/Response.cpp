@@ -23,38 +23,45 @@ Response::Response(Type type)
 bool Response::send(int client_socket) {
     LOG_INFO("Response::send", "Sending response to socket {}", client_socket)
     auto code = get_type_as_string();
+    LOG_INFO("Response::send", "GOT CODE {}{}", code[0], code[1])
 
     char size[32];
+    LOG_INFO("Response::send", "Stack allocated array")
 
     auto length = fmt::format("{}", m_data.size());
+    LOG_INFO("Response::send", "Printent length")
 
     for (int i = 0; i < 32; i++) {
         size[i] = ' ';
 
         if (i < (int)length.size())
             size[i] = length[i];
+
+        LOG_INFO("Response::send", "LOOOP WEEEEE {}", i)
     }
 
-    fmt::print("Send: {}\n", size);
-    // strcpy(size, (const char*)str.c_str());
-
     if (::send(client_socket, code, 2, 0) == -1) {
-        LOG_ERROR("Response::send", "Failed sending code")
+        LOG_FATAL("Response::send", "Failed sending code")
         delete[] code;
         return false;
     }
+    LOG_INFO("Response::send", "Code sent successfully")
 
     delete[] code;
+    LOG_INFO("Response::send", "Deleted code memory")
 
     if (::send(client_socket, size, 32, 0) == -1) {
-        LOG_ERROR("Response::send", "Failed sending data size")
+        LOG_FATAL("Response::send", "Failed sending data size")
         return false;
     }
+    LOG_INFO("Response::send", "Size sent successfully")
     if (::send(client_socket, m_data.c_str(), m_data.size(), 0) == -1) {
-        LOG_ERROR("Response::send", "Failed sending data")
+        LOG_FATAL("Response::send", "Failed sending data")
         return false;
     }
+    LOG_INFO("Response::send", "Everything succeeded")
 
+    LOG_INFO("Response::send", "Succesfully send response to socket {}", client_socket)
     return true;
 }
 

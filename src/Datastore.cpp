@@ -25,6 +25,7 @@ void Datastore::boot() {
 }
 
 void Datastore::shutdown() {
+    LOG_INFO("Datastore::shutdown", "Called")
     if (m_should_shutdown)
         return;
 
@@ -41,6 +42,11 @@ void Datastore::shutdown() {
     }
 
     LOG_INFO("Datastore::shutdown", "Datastore has been shutdown")
+}
+
+void Datastore::keep_alive() {
+    if (m_ttl_worker)
+        m_ttl_worker->join();
 }
 
 Network::Response Datastore::handle_query(int client_socket, const char* query) {
@@ -85,8 +91,11 @@ void Datastore::t_clean_ttl() {
     using namespace std::literals::chrono_literals;
 
     while (!m_should_shutdown) {
-        // LOG_INFO("Datastore::t_clean_ttl", "Cleaning TTL")
-        std::this_thread::sleep_for(1s);
+        for (int i = 0; i < 32; i++) {
+            auto db = m_databases[i];
+            // TODO: Implement cleaning up here
+        }
+        std::this_thread::sleep_for(10s);
     }
 }
 
@@ -160,16 +169,13 @@ Network::Response Datastore::handle_table_read(Language::Action& action, int& da
     std::string m_rows;
 
     for (auto& col : table->get_columns()) {
-        fmt::print("COLUMNS: {}\n", col);
         m_rows += fmt::format("{},", col);
     }
 
     if (with_ttl) {
-        fmt::print("ADDING :TLL columns\n");
         m_rows += ":TTL";
     } else {
         m_rows = m_rows.substr(0, m_rows.size() - 1);
-        fmt::print("REMOVING LAST , \n");
     }
 
     m_rows += "\n";

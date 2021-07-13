@@ -19,6 +19,7 @@ public:
 
     void boot();
     void shutdown();
+    void keep_alive();
 
     Network::Response handle_query(int client_socket, const char* query);
 

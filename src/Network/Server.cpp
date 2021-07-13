@@ -109,8 +109,10 @@ void Server::t_listen() {
             while (m_is_open) {
                 char next_message_size[32];
 
+                LOG_TRACE("Server::t_listen::client_thread", "Reading message size")
                 int res = read(client_socket, &next_message_size, sizeof(next_message_size));
                 next_message_size[31] = '\0';
+                LOG_TRACE("Server::t_listen::client_thread", "Message size read")
 
                 if (res == 0) {
                     LOG_INFO("Server::t_listen::client_thread", "Connection with client closed")
@@ -150,7 +152,9 @@ void Server::t_listen() {
                     break;
                 } else {
                     auto res = m_datastore->handle_query(client_socket, query_buffer);
-                    res.send(client_socket);
+                    if (!res.send(client_socket)) {
+                        LOG_ERROR("Server::t_listen::client_thread", "Failed to send a message to client {}", client_socket)
+                    }
                 }
             }
 

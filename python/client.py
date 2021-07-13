@@ -59,35 +59,47 @@ def main():
 
     c.send("DEFINE TABLE user_auth:300 WITH user_id, token;")
 
-    for _ in range(50):
+    exectime = 0
+
+    amount_per = 10
+
+    for _ in range(amount_per):
+        start = time.time()
+
         c.send(f"TO user_auth CREATE user_id=\"{random.randint(0, 10)}\", token=\"{ random.randint(-20000000,000000000) }\";")
-        pass
 
-    # c.send("TO user_auth CREATE user_id=\"5\", token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";")
-    # c.send("TO user_auth CREATE user_id=\"4\", token=\"eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9\";")
-    # c.send("TO user_auth CREATE user_id=\"7\", token=\"eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0\";")
+        code = c.recv(2).decode('ascii')
+        bufsize = int(c.recv(32).decode('ascii'))
+        msg = c.recv(bufsize).decode('ascii')
 
-    loop = 0
+        delta = time.time() - start
+        exectime += delta
 
-    while(True):
+        # print(f"Execution for a CREATE statment was {delta * 1000}ms")
+
+
+    print(f"Executing {amount_per} CREATE STATMENTS took {exectime * 1000}ms and average of {(exectime/amount_per) * 1000}ms per statement")
+    total = exectime
+    exectime = 0
+
+    for _ in range(amount_per):
+        start = time.time()
+
         c.send(get_random_query())
 
         code = c.recv(2).decode('ascii')
-        print(code)
         bufsize = int(c.recv(32).decode('ascii'))
-        print(bufsize)
-
         msg = c.recv(bufsize).decode('ascii')
 
-        print(f"{code=}")
-        print(f"{bufsize=}")
-        print(f"{msg}")
+        delta = time.time() - start
+        exectime += delta
 
-        if loop < 50:
-            loop += 1
-        else:
-            time.sleep(4)
-        #  pass
+        # print(f"Execution for a FROM statment was {delta}")
+
+    total += exectime
+
+    print(f"Executing {amount_per} FROM STATMENTS took {exectime * 1000}ms and average of {exectime/amount_per * 1000}ms per statement")
+    print(f"Total was {total * 1000}ms and average of {(total/(amount_per * 2)) * 1000}ms per op")
 
 
 if __name__ == "__main__":
