@@ -91,10 +91,10 @@ void Datastore::t_clean_ttl() {
     using namespace std::literals::chrono_literals;
 
     while (!m_should_shutdown) {
-        for (int i = 0; i < 32; i++) {
-            auto db = m_databases[i];
-            // TODO: Implement cleaning up here
-        }
+        // for (int i = 0; i < 24; i++) {
+        //     auto db = m_databases[i];
+        //     // TODO: Implement cleaning up here
+        // }
         std::this_thread::sleep_for(10s);
     }
 }

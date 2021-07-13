@@ -3,6 +3,26 @@
 Ridesqle come from combining Redis and SQL into a new word meaning ridicule,
 since I'm ridiculed by myself by making this project.
 
+## Getting started
+
+Clone, build and run:
+
+```sh
+git clone --recurse-submodules https://github.com/Jrp0h/datastore.git
+cd datastore
+mkdir build
+cd build
+cmake ../ -G Ninja
+./datastore
+```
+
+To run client:
+
+```sh
+cd python
+python3 client.py
+```
+
 ## Protocol
 
 > NOTE: This is a WIP and drastic changes may come.

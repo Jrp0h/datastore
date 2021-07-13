@@ -102,6 +102,11 @@ void Server::t_listen() {
 
         LOG_INFO("Server::t_listen", "Client has been accepted on socket {}", client_socket);
 
+        if (m_clients.contains(client_socket)) {
+            m_clients[client_socket]->join();
+            delete m_clients[client_socket];
+        }
+
         m_clients[client_socket] = (new std::thread([&] {
             char* query_buffer = new char[64];
             int query_buffer_size = 64;
