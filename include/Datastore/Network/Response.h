@@ -11,6 +11,8 @@ public:
         SYNTAX_ERROR,
         INVALID_DATABASE,
         TABLE_CREATED,
+        TABLE_UNDEFINED,
+        TABLE_ROW_INSERTED
     };
 
     Response(Type type, std::string data);

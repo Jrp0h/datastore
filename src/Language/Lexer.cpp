@@ -57,21 +57,21 @@ void Lexer::advance() {
 }
 
 Token Lexer::advance_with_token(Token token) {
-    LOG_DEBUG("Lexer::advance_with_token", "advancing with token")
+    // LOG_DEBUG("Lexer::advance_with_token", "advancing with token")
     advance();
     token.m_end++;
     return token;
 }
 
 void Lexer::skip_whitespace() {
-    LOG_DEBUG("Lexer::skip_whitespace", "Skipping whitespace")
+    // LOG_DEBUG("Lexer::skip_whitespace", "Skipping whitespace")
     while (m_current_char == ' ' || m_current_char == '\n' || m_current_char == '\t')
         advance();
-    LOG_DEBUG("Lexer::skip_whitespace", "Done skipping whitespace")
+    // LOG_DEBUG("Lexer::skip_whitespace", "Done skipping whitespace")
 }
 
 Token Lexer::collect_data() {
-    LOG_DEBUG("Lexer::collect_data", "Collecting data")
+    // LOG_DEBUG("Lexer::collect_data", "Collecting data")
     int start_index = m_index;
     advance();
 
@@ -88,12 +88,12 @@ Token Lexer::collect_data() {
 
     advance();
 
-    LOG_DEBUG("Lexer::collect_data", "Done collecting data")
+    // LOG_DEBUG("Lexer::collect_data", "Done collecting data")
     return Token(Token::DATA, str, start_index, m_index);
 }
 
 Token Lexer::collect_identifier() {
-    LOG_DEBUG("Lexer::collect_identifier", "Collecting identifier")
+    // LOG_DEBUG("Lexer::collect_identifier", "Collecting identifier")
     std::string str;
     int start_index = m_index;
 
@@ -102,12 +102,12 @@ Token Lexer::collect_identifier() {
         advance();
     }
 
-    LOG_DEBUG("Lexer::collect_identifier", "Done collecting identifier")
+    // LOG_DEBUG("Lexer::collect_identifier", "Done collecting identifier")
     return Token(Token::IDENTIFIER, str, start_index, m_index);
 }
 
 Token Lexer::collect_number() {
-    LOG_DEBUG("Lexer::collect_number", "Collecting number")
+    // LOG_DEBUG("Lexer::collect_number", "Collecting number")
     int start_index = m_index;
     std::string str;
 
@@ -116,7 +116,7 @@ Token Lexer::collect_number() {
         advance();
     }
 
-    LOG_DEBUG("Lexer::collect_number", "Done collecting number")
+    // LOG_DEBUG("Lexer::collect_number", "Done collecting number")
     return Token(Token::NUMBER, str, start_index, m_index);
 }
 

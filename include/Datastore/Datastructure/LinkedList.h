@@ -42,17 +42,25 @@ template<typename T>
 class LinkedList {
 public:
     void push_back(std::string key, T data) {
+        LOG_DEBUG("LinkedList::push_back", "New node created")
         LinkedListNode<T>* node = new LinkedListNode(key, data);
         push_back(node);
     }
 
     void push_back(LinkedListNode<T>* node) {
         if (m_head == nullptr) {
+            LOG_DEBUG("LinkedList::push_back", "No head exists, adding")
             m_head = node;
             return;
         }
 
+        LOG_DEBUG("LinkedList::push_back", "Head found, looking for tail")
         auto last = get_tail();
+
+        if (last == nullptr)
+            LOG_FATAL("LinkedList::push_back", "Head is not null but there is no tail")
+
+        LOG_DEBUG("LinkedList::push_back", "Tail found, setting new node")
         last->set_next(node);
     }
 
@@ -64,10 +72,10 @@ public:
         LinkedListNode<T>* middle = m_head;
         LinkedListNode<T>* current = last;
 
-        while ((current = current->get_next()) != nullptr) {
+        do {
             middle = last;
             last = current;
-        }
+        } while ((current = current->get_next()) != nullptr);
 
         middle->set_next(nullptr);
         delete last;
@@ -79,10 +87,10 @@ public:
 
         LinkedListNode<T>* current = m_head;
 
-        while ((current = current->get_next()) != nullptr) {
+        do {
             if (key == current->get_key())
                 return current->get_data_pointer();
-        }
+        } while ((current = current->get_next()) != nullptr);
 
         return nullptr;
     }
@@ -99,14 +107,14 @@ public:
         LinkedListNode<T>* last = m_head;
         LinkedListNode<T>* current = m_head;
 
-        while ((current = current->get_next()) != nullptr) {
+        do {
             if (key == current->get_key()) {
                 current->set_data(data);
                 return;
             }
 
             last = current;
-        }
+        } while ((current = current->get_next()) != nullptr);
 
         last->set_next(new LinkedListNode<T>(key, data));
     }
@@ -117,7 +125,7 @@ public:
         LinkedListNode<T>* last = m_head;
         LinkedListNode<T>* current = last;
 
-        while ((current = current->get_next()) != nullptr) {
+        do {
             if (key == current->get_key()) {
                 last->set_next(current->get_next());
                 delete current;
@@ -125,7 +133,7 @@ public:
             }
 
             last = current;
-        }
+        } while ((current = current->get_next()) != nullptr);
     }
 
     LinkedListNode<T>* get_node_by_key(std::string key) {
@@ -165,8 +173,9 @@ public:
         LinkedListNode<T>* last = m_head;
         LinkedListNode<T>* current = last;
 
-        while ((current = current->get_next()) != nullptr)
+        do {
             last = current;
+        } while ((current = current->get_next()) != nullptr);
 
         return last;
     }

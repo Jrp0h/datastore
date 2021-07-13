@@ -38,6 +38,7 @@ private:
     void t_clean_ttl();
 
     Network::Response handle_table_definition(Language::Action& action, int& database);
+    Network::Response handle_table_insert(Language::Action& action, int& database);
 
 private:
     Database m_databases[24];

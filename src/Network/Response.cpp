@@ -74,9 +74,17 @@ char* Response::get_type_as_string() {
         code[0] = 'I';
         code[1] = 'D';
         return code;
+    case TABLE_UNDEFINED:
+        code[0] = 'T';
+        code[1] = 'U';
+        return code;
     case TABLE_CREATED:
         code[0] = 'T';
         code[1] = 'C';
+        return code;
+    case TABLE_ROW_INSERTED:
+        code[0] = 'T';
+        code[1] = 'I';
         return code;
     }
 

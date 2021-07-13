@@ -64,4 +64,11 @@ public:
     }
 };
 
+class UnknownMod : public Error {
+public:
+    UnknownMod(std::string query, Token got) {
+        set_constructed(fmt::format("Unknown mod {} for this action.\n{}\n{}", got.get_content(), query, underline_query(query, got)));
+    }
+};
+
 }

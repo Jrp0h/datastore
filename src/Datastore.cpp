@@ -71,6 +71,8 @@ Network::Response Datastore::handle_query(int client_socket, const char* query) 
         return Response(Response::INVALID_DATABASE, fmt::format("{}", database));
     else if (action.get_type() == Language::Action::TABLE_DEFINE)
         return handle_table_definition(action, database);
+    else if (action.get_type() == Language::Action::TABLE_INSERT)
+        return handle_table_insert(action, database);
     else
         return Response(Response::DATA, fmt::format("Action {} is not yet implemented", action.get_type_as_string()));
 }
@@ -106,4 +108,28 @@ Network::Response Datastore::handle_table_definition(Language::Action& action, i
     db.add_table(table_name, Table(table_columns, table_ttl, has_one_touch, has_poke));
 
     return Network::Response(Network::Response::DATA, fmt::format("Table {} has been created", table_name));
+}
+
+Network::Response Datastore::handle_table_insert(Language::Action& action, int& database_id) {
+
+    auto table_name = action.get_table_name();
+    auto table_variables = action.get_table_variables();
+
+    auto& db = m_databases[database_id];
+    auto* table = db.get_table(table_name);
+
+    if (table == nullptr)
+        return Network::Response(Network::Response::TABLE_UNDEFINED, fmt::format("{}", table_name));
+
+    std::unordered_map<std::string, std::optional<std::string>> vars;
+
+    for (auto& data : table_variables) {
+        vars[data.first] = data.second;
+    }
+
+    LOG_DEBUG("Datastore::handle_table_insert", "Adding record to {}", table_name)
+    table->add_record(vars);
+    LOG_DEBUG("Datastore::handle_table_insert", "Record addded to {}", table_name)
+
+    return Network::Response(Network::Response::TABLE_ROW_INSERTED, fmt::format("Row has been inserted into table {}", table_name));
 }

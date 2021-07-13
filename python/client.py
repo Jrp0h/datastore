@@ -31,9 +31,9 @@ class Client:
 def get_random_query():
     queries = [
         # "SELECT",
-        # "TO \"user_auth\" CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
+        "TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
         # "DESTROY user_auth;",
-        "DEFINE TABLE user_auth:300 WITH user_id, token MOD :POKE;",
+        # "DEFINE TABLE user_auth:300 WITH user_id, token MOD :POKE;",
         # "WHICH;"
         # "DESTROY user_auth;",
         # "FROM user_auth DELETE WHERE toke=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
@@ -54,6 +54,8 @@ def main():
 
     c = Client()
     c.connect()
+
+    c.send("DEFINE TABLE user_auth:300 WITH user_id, token MOD :POKE;")
 
     while(True):
         c.send(get_random_query())

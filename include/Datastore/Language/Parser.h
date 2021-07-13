@@ -30,7 +30,7 @@ private:
 
     void capture_variables(Action* action);
     void capture_where(Action* action);
-    void capture_mods(Action* action);
+    void capture_mods(Action* action, bool is_table_definition);
     void capture_columns(Action* action);
 
     Action parse_database_select();

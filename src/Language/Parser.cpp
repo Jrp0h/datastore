@@ -54,7 +54,7 @@ Action Parser::parse_table_from() {
             }
 
             eat(Token::IDENTIFIER);
-            capture_mods(&action);
+            capture_mods(&action, false);
         }
 
     } else if (what.get_content() == "DELETE") {
@@ -72,7 +72,7 @@ Action Parser::parse_table_from() {
         }
     } else if (what.get_content() == "MOD") {
         eat(Token::IDENTIFIER);
-        capture_mods(&action);
+        capture_mods(&action, false);
     }
 
     eat(Token::SEMICOLON);
@@ -143,15 +143,23 @@ void Parser::capture_where(Action* action) {
     }
 }
 
-void Parser::capture_mods(Action* action) {
+void Parser::capture_mods(Action* action, bool is_table_definition) {
     eat(Token::COLON);
     auto value = eat(Token::IDENTIFIER);
+
+    if (is_table_definition) {
+        if (value != "POKE" && value != "ONE_TOUCH")
+            throw UnknownMod(m_lexer.get_content(), value);
+    } else {
+        if (value != "ONE" && value != "WITH_TTL")
+            throw UnknownMod(m_lexer.get_content(), value);
+    }
 
     action->m_table_mods.push_back(value.get_content());
 
     if (current() == Token::COMMA) {
         eat(Token::COMMA);
-        capture_mods(action);
+        capture_mods(action, is_table_definition);
     }
 }
 
@@ -199,7 +207,7 @@ Action Parser::parse_table_define() {
         }
 
         eat(Token::IDENTIFIER);
-        capture_mods(&action);
+        capture_mods(&action, true);
     }
     eat(Token::SEMICOLON);
     return action;
