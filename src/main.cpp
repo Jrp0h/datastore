@@ -1,15 +1,15 @@
+#include <chrono>
 #include <iostream>
 #include <thread>
-#include <chrono>
 
 #include "Datastore.h"
+#include "Record.h"
 #include "TTL.h"
 #include "Table.h"
-#include "Record.h"
 
 #include "Language/Lexer.h"
-#include "Language/Token.h"
 #include "Language/Parser.h"
+#include "Language/Token.h"
 
 #include "Network/Server.h"
 
@@ -17,25 +17,22 @@
 
 int main() {
 
-    Network::Server server;
-    server.start();
-
     Datastore ds;
 
-    fmt::print("{}\n", sizeof(char));
+    // fmt::print("{}\n", sizeof(char));
 
     ds.boot();
 
     std::cin.get();
-    
     // Language::Lexer l("TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";");
     // Language::Lexer l("DEFINE TABLE dead_drop:450 WITH message MOD :ONE_TOUCH;");
-    
+
     // Fails (Syntax):
     // Language::Parser p("TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\" WHERE test=\"yoooo\";"); // MISSPLACED WHERE CLAUSE
 
     // DONE
     // Language::Parser p("TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";");
+    //
     // Language::Parser p("TO user_auth SET user_id = \"5\", auth_token = \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\" WHERE yoo=\"Hello\";");
     // Language::Parser p("TO user_auth SET user_id = \"5\", auth_token = \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";");
     // Language::Parser p("SELECT 7;");
@@ -62,29 +59,28 @@ int main() {
 
     // std::cout << "Variables:" << std::endl;
     // for(auto& var : a.get_table_variables()) {
-        // std::cout << "\t" << var.first << ": " << var.second << std::endl;
+    // std::cout << "\t" << var.first << ": " << var.second << std::endl;
     // }
 
     // std::cout << "WHERE:" << std::endl;
     // for(auto& var : a.get_table_where()) {
-        // std::cout << "\t" << var.first << ": " << var.second << std::endl;
+    // std::cout << "\t" << var.first << ": " << var.second << std::endl;
     // }
 
     // std::cout << "MODS:" << std::endl;
     // for(auto& var : a.get_table_mods()) {
-        // std::cout << "\t" << var << std::endl;
+    // std::cout << "\t" << var << std::endl;
     // }
-
 
     // std::cout << "Columns:" << std::endl;
     // for(auto& var : a.get_table_columns()) {
-        // std::cout << "\t" << var << std::endl;
+    // std::cout << "\t" << var << std::endl;
     // }
 
     // auto tokens = l.get_all_tokens();
 
     // for(auto& t : tokens) {
-        // std::cout << t << std::endl;
+    // std::cout << t << std::endl;
     // }
 
     // std::cin.get();
@@ -103,7 +99,7 @@ int main() {
     // t->add_record(Record(Record::DataType{{"hello", "my friend"}, {"gucci", "no gang"}}));
 
     // for(auto r : *db->get_table("user_auth")->get_records()) {
-        // std::cout << r.get_value("hello").value() << " - " << r.get_value("gucci").value() << std::endl;
+    // std::cout << r.get_value("hello").value() << " - " << r.get_value("gucci").value() << std::endl;
     // }
 
     // TimeToLive ttl(3);

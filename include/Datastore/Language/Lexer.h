@@ -17,6 +17,7 @@ public:
 
     Token get_next_token();
     std::vector<Token> get_all_tokens();
+    std::string& get_content();
 
 private:
     void advance();

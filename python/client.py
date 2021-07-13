@@ -30,11 +30,11 @@ class Client:
 
 def get_random_query():
     queries = [
-        "SELECT;",
-        "TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
+        # "SELECT",
+        "TO \"user_auth\" CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
         # "DESTROY user_auth;",
         # "DEFINE TABLE user_auth:300 user WITH_id, token MOD :POKE;",
-        "WHICH;"
+        # "WHICH"
         # "DESTROY user_auth;",
         # "FROM user_auth DELETE WHERE toke=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
         # "FROM dead_drop MOD :WITH_TTL, :ONE;",
@@ -44,8 +44,8 @@ def get_random_query():
 
     which = random.randint(0, len(queries) - 1)
 
-    if which == 0:
-        return f"SELECT {random.randint(0, 24)};"
+    # if which == 0:
+    #     return f"SELECT {random.randint(0, 24)};"
 
     return queries[which]
 

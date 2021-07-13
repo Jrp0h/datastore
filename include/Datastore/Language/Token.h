@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Logger.h"
 #include "Macros.h"
 
@@ -8,6 +7,8 @@
 #include <string>
 
 namespace Language {
+
+class Lexer;
 
 class Token {
 public:
@@ -23,13 +24,15 @@ public:
     };
 
     Token();
-    Token(Type type, std::string content);
+    Token(Type type, std::string content, int start, int end = 0);
 
     Type get_type() const { return m_type; }
     std::string get_content() const { return m_content; }
+    int get_start() const { return m_start; }
+    int get_end() const { return m_end; }
 
     static std::string get_type_as_string(Type type) {
-        switch(type) {
+        switch (type) {
             TYPE_TO_STRING(IDENTIFIER)
             TYPE_TO_STRING(EQUAL)
             TYPE_TO_STRING(COMMA)
@@ -50,9 +53,9 @@ public:
 
         std::string type = t.get_type_as_string();
 
-        if(t.m_type == E_O_F)
-           cout << type << ")";
-        else if(t.m_type == DATA)
+        if (t.m_type == E_O_F)
+            cout << type << ")";
+        else if (t.m_type == DATA)
             cout << type << ", \"" << t.m_content << "\")";
         else
             cout << type << ", " << t.m_content << ")";
@@ -69,7 +72,7 @@ public:
     }
 
     bool operator==(Token& other) {
-        return *this == other.m_type 
+        return *this == other.m_type
             && *this == other.m_content;
     }
 
@@ -85,8 +88,11 @@ public:
     }
 
 private:
+    friend Lexer;
+
     Type m_type;
     std::string m_content;
+    int m_start, m_end;
 };
 
 }

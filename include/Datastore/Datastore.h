@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Table.h"
 #include "Database.h"
+#include "Network/Server.h"
+#include "Table.h"
 
 #include <string>
-#include <vector>
 #include <thread>
-
+#include <vector>
 
 class Datastore {
 public:
@@ -29,4 +29,5 @@ private:
     std::thread* m_ttl_worker = nullptr;
 
     bool m_should_shutdown = false;
+    Network::Server m_server;
 };

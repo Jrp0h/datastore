@@ -33,6 +33,7 @@ set(SOURCE_FILES
     src/Language/Action.cpp
     src/Language/Parser.cpp
     src/Language/Lexer.cpp
+    src/Language/Errors.cpp
 
     # Networking
     src/Network/Server.cpp

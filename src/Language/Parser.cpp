@@ -1,5 +1,6 @@
 #include "Language/Parser.h"
 
+#include "Language/Errors.h"
 #include "Logger.h"
 
 #include <sstream>
@@ -13,7 +14,8 @@ void Parser::set_query(std::string query) {
 }
 
 Action Parser::parse() {
-    std::string content = eat(Token::IDENTIFIER).get_content();
+    auto got = eat(Token::IDENTIFIER);
+    std::string content = got.get_content();
 
     if (content == "WHICH") {
         eat(Token::SEMICOLON);
@@ -29,7 +31,7 @@ Action Parser::parse() {
     else if (content == "DESTROY")
         return parse_table_destroy();
 
-    LOG_FATAL("Parser::parse_statement", "Unknown identifier")
+    throw UnknownIdentifier(m_lexer.get_content(), got);
 }
 
 Action Parser::parse_table_from() {
@@ -48,7 +50,7 @@ Action Parser::parse_table_from() {
 
         if (peek.get_type() == Token::IDENTIFIER) {
             if (peek.get_content() != "MOD") {
-                LOG_FATAL("Parser::parse_table_from", "Expected MOD Identifier, got something else")
+                throw UnexpectedIdentifier(m_lexer.get_content(), peek, "MOD");
             }
 
             eat(Token::IDENTIFIER);
@@ -62,7 +64,7 @@ Action Parser::parse_table_from() {
 
         if (peek.get_type() == Token::IDENTIFIER) {
             if (peek.get_content() != "WHERE") {
-                LOG_FATAL("Parser::parse_table_from", "Expected WHERE Identifier, got something else")
+                throw UnexpectedIdentifier(m_lexer.get_content(), peek, "WHERE");
             }
 
             eat(Token::IDENTIFIER);
@@ -102,7 +104,7 @@ void Parser::continue_with_update(Action* action) {
 
     if (peek.get_type() == Token::IDENTIFIER) {
         if (peek.get_content() != "WHERE") {
-            LOG_FATAL("Parser::continue_with_update", "Expected WHERE Identifier, got something else")
+            throw UnexpectedIdentifier(m_lexer.get_content(), peek, "WHERE");
         }
 
         eat(Token::IDENTIFIER);
@@ -166,7 +168,10 @@ void Parser::capture_columns(Action* action) {
 
 Action Parser::parse_table_define() {
     Action action(Action::TABLE_DEFINE);
-    eat(Token::IDENTIFIER); // "TABLE"
+    auto id = eat(Token::IDENTIFIER); // "TABLE"
+
+    if (id != "TABLE")
+        throw UnexpectedIdentifier(m_lexer.get_content(), id, "TABLE");
 
     auto table_name = eat(Token::IDENTIFIER);
     action.m_table_name = table_name.get_content();
@@ -179,14 +184,18 @@ Action Parser::parse_table_define() {
         action.m_table_ttl = atoi(value.get_content().c_str());
     }
 
-    eat(Token::IDENTIFIER); // "WITH"
+    id = eat(Token::IDENTIFIER); // "WITH"
+
+    if (id != "WITH")
+        throw UnexpectedIdentifier(m_lexer.get_content(), id, "WITH");
+
     capture_columns(&action);
 
     peek = current();
 
     if (peek.get_type() == Token::IDENTIFIER) {
         if (peek.get_content() != "MOD") {
-            LOG_FATAL("Parser::parse_table_define", "Expected MOD Identifier, got something else")
+            throw UnexpectedIdentifier(m_lexer.get_content(), peek, "MOD");
         }
 
         eat(Token::IDENTIFIER);
@@ -220,7 +229,7 @@ Token Parser::eat(Token::Type expected) {
     Token t = m_statement[m_current_token++];
 
     if (t != expected) {
-        LOG_FATAL("Parser::eat", "Expected {}, Got {} with value {}", Token::get_type_as_string(expected), t.get_type_as_string(), t.get_content())
+        throw UnexpectedToken(m_lexer.get_content(), t, expected);
     }
 
     return t;
