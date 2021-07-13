@@ -9,5 +9,5 @@ Table::Table(std::vector<std::string> columns, std::optional<int> ttl, bool has_
 
 void Table::add_record(Record record) {
     record.m_parent = this;
-    m_records.push_back("", record);
+    m_records.push_back(0, record);
 }

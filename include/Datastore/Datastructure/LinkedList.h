@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Logger.h"
+
+#include <fmt/format.h>
 #include <string>
 
 namespace Datastructure {
@@ -7,16 +10,28 @@ namespace Datastructure {
 template<typename T>
 class LinkedListNode {
 public:
-    LinkedListNode(std::string key, T data) 
-        : m_key(key), m_data(data) { }
+    LinkedListNode(std::string key, T data)
+        : m_key(key)
+        , m_data(data) { }
 
-    T* get_data() { return &m_data; }
+    T* get_data_pointer() { return &m_data; }
+
+    template<int>
+    int get_data() {
+        fmt::print("Data is {}", m_data);
+        return m_data;
+    }
+
+    T get_data() { return m_data; }
+
     void set_data(T data) { m_data = data; }
+
     std::string& get_key() { return m_key; }
 
     LinkedListNode<T>* get_next() { return m_next; }
 
     void set_next(LinkedListNode<T>* node) { m_next = node; }
+
 private:
     std::string m_key;
     T m_data;
@@ -32,7 +47,7 @@ public:
     }
 
     void push_back(LinkedListNode<T>* node) {
-        if(m_head == nullptr) {
+        if (m_head == nullptr) {
             m_head = node;
             return;
         }
@@ -42,14 +57,14 @@ public:
     }
 
     void pop_back() {
-        if(m_head == nullptr)
+        if (m_head == nullptr)
             return;
 
         LinkedListNode<T>* last = m_head;
         LinkedListNode<T>* middle = m_head;
         LinkedListNode<T>* current = last;
 
-        while((current = current->get_next()) != nullptr){
+        while ((current = current->get_next()) != nullptr) {
             middle = last;
             last = current;
         }
@@ -59,30 +74,33 @@ public:
     }
 
     T* get_by_key(std::string key) {
-        if(m_head == nullptr)
+        if (m_head == nullptr)
             return nullptr;
 
         LinkedListNode<T>* current = m_head;
 
-        while((current = current->get_next()) != nullptr){
-            if(key == current->get_key())
-                return current->get_data();
+        while ((current = current->get_next()) != nullptr) {
+            if (key == current->get_key())
+                return current->get_data_pointer();
         }
 
         return nullptr;
     }
 
     void set_value_by_key(std::string key, T data) {
-        if(m_head == nullptr) {
+        LOG_DEBUG("LinkedList::set_value_by_key", "Setting value to key {}", key);
+
+        if (m_head == nullptr) {
             m_head = new LinkedListNode<T>(key, data);
+            LOG_DEBUG("LinkedList::set_value_by_key", "Setting head to an object with key {}", key);
             return;
         }
 
         LinkedListNode<T>* last = m_head;
         LinkedListNode<T>* current = m_head;
 
-        while((current = current->get_next()) != nullptr){
-            if(key == current->get_key()) {
+        while ((current = current->get_next()) != nullptr) {
+            if (key == current->get_key()) {
                 current->set_data(data);
                 return;
             }
@@ -90,17 +108,17 @@ public:
             last = current;
         }
 
-        last->next = new LinkedListNode<T>(key, data);
+        last->set_next(new LinkedListNode<T>(key, data));
     }
     void remove_by_key(std::string key) {
-        if(m_head == nullptr)
+        if (m_head == nullptr)
             return;
 
         LinkedListNode<T>* last = m_head;
         LinkedListNode<T>* current = last;
 
-        while((current = current->get_next()) != nullptr){
-            if(key == current->get_key()){
+        while ((current = current->get_next()) != nullptr) {
+            if (key == current->get_key()) {
                 last->set_next(current->get_next());
                 delete current;
                 return;
@@ -111,15 +129,21 @@ public:
     }
 
     LinkedListNode<T>* get_node_by_key(std::string key) {
-        if(m_head == nullptr)
+        if (m_head == nullptr)
             return nullptr;
+
+        LOG_DEBUG("LinkedListNode::get_node_by_key", "Head was not null, looking for key {}", key)
 
         LinkedListNode<T>* current = m_head;
 
-        while((current = current->get_next()) != nullptr){
-            if(key == current->get_key())
+        do {
+            if (key == current->get_key())
                 return current;
-        }
+
+            LOG_DEBUG("LinkedListNode::get_node_by_key", "Key {} didn't match {}", current->get_key(), key)
+        } while ((current = current->get_next()) != nullptr);
+
+        LOG_DEBUG("LinkedListNode::get_node_by_key", "Key {} was not found", current->get_key(), key)
 
         return nullptr;
     }
@@ -132,7 +156,7 @@ public:
         LinkedListNode<T>* last = m_head;
         LinkedListNode<T>* current = last;
 
-        while((current = current->get_next()) != nullptr)
+        while ((current = current->get_next()) != nullptr)
             last = current;
 
         return last;

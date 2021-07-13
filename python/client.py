@@ -27,25 +27,36 @@ class Client:
         return self.client.recv(size);
 
 
+
+def get_random_query():
+    queries = [
+        "SELECT;",
+        "TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
+        # "DESTROY user_auth;",
+        # "DEFINE TABLE user_auth:300 user WITH_id, token MOD :POKE;",
+        "WHICH;"
+        # "DESTROY user_auth;",
+        # "FROM user_auth DELETE WHERE toke=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
+        # "FROM dead_drop MOD :WITH_TTL, :ONE;",
+        # "DEFINE TABLE posts WITH post_id, description, title;",
+        # "DEFINE TABLE dead_drop:450 WITH message MOD :ONE_TOUCH;"
+    ]
+
+    which = random.randint(0, len(queries) - 1)
+
+    if which == 0:
+        return f"SELECT {random.randint(0, 24)};"
+
+    return queries[which]
+
 def main():
 
-    queries = [
-        "TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
-        "DESTROY user_auth;",
-        "DEFINE TABLE user_auth:300 user WITH_id, token MOD :POKE;",
-        "SELECT 7;",
-        "DESTROY user_auth;",
-        "FROM user_auth DELETE WHERE toke=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";",
-        "FROM dead_drop MOD :WITH_TTL, :ONE;",
-        "DEFINE TABLE posts WITH post_id, description, title;",
-        "DEFINE TABLE dead_drop:450 WITH message MOD :ONE_TOUCH;"
-    ]
 
     c = Client()
     c.connect()
 
     while(True):
-        c.send(queries[random.randint(0, len(queries) - 1)])
+        c.send(get_random_query())
 
         code = c.recv(2).decode('ascii')
         print(code)

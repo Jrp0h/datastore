@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Record.h"
 #include "Datastructure/LinkedList.h"
+#include "Record.h"
 
-#include <vector>
+#include <iostream>
 #include <optional>
 #include <unordered_map>
-#include <iostream>
+#include <vector>
 
 class Table {
 public:
@@ -30,7 +30,7 @@ private:
     friend Record;
 
     Datastructure::LinkedList<Record> m_records;
-    std::optional<int> m_ttl; 
+    std::optional<int> m_ttl;
     bool m_one_touch;
     bool m_poke;
 

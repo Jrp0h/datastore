@@ -8,11 +8,15 @@ namespace Language {
 
 class Parser {
 public:
-    Parser(std::string content) : m_lexer(content) {
+    Parser(std::string content)
+        : m_lexer(content) {
         m_statement = m_lexer.get_all_tokens();
         m_current_token = 0;
     }
 
+    Parser() { }
+
+    void set_query(std::string query);
     Action parse();
 
 private:

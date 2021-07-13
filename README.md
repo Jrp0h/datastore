@@ -27,6 +27,6 @@ ex.
 - DT - Means that data will come.
 - SE - Means invalid syntax
 
-Second one is the size of the data/message/whatever may come.
+Second one is the size of the data/message/whatever may come. 32 bytes
 
 Third one is the data/message/whatever
