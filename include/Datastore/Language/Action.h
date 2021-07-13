@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Macros.h"
 #include "Logger.h"
+#include "Macros.h"
 
-#include <string>
-#include <vector>
-#include <unordered_map>
 #include <optional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace Language {
 
@@ -25,10 +25,12 @@ public:
 
         DATABASE_SELECT,
         DATABASE_WHICH,
+
+        NO_ACTION
     };
 
-    Action(Type type) 
-        : m_type(type) {}
+    Action(Type type)
+        : m_type(type) { }
 
     Type get_type() const { return m_type; }
 
@@ -42,7 +44,7 @@ public:
     int get_database_index() const { return m_database_index; }
 
     static std::string get_type_as_string(Type type) {
-        switch(type) {
+        switch (type) {
             TYPE_TO_STRING(TABLE_DEFINE)
             TYPE_TO_STRING(TABLE_DESTROY)
 
@@ -53,6 +55,8 @@ public:
 
             TYPE_TO_STRING(DATABASE_SELECT)
             TYPE_TO_STRING(DATABASE_WHICH)
+
+            TYPE_TO_STRING(NO_ACTION)
         }
 
         LOG_TRACE("Action::get_type_as_string", "{}", (int)type)

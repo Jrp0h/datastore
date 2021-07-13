@@ -1,8 +1,10 @@
 #include "Network/Server.h"
 
+#include "Datastore.h"
 #include "Language/Parser.h"
 #include "Logger.h"
 #include "Network/Response.h"
+#include "Network/Server.h"
 
 #include <netinet/in.h>
 #include <stdlib.h>
@@ -101,10 +103,6 @@ void Server::t_listen() {
         LOG_INFO("Server::t_listen", "Client has been accepted on socket {}", client_socket);
 
         m_clients[client_socket] = (new std::thread([&] {
-            int client_database = -1;
-
-            Language::Parser client_query_parser;
-
             char* query_buffer = new char[64];
             int query_buffer_size = 64;
 
@@ -151,26 +149,8 @@ void Server::t_listen() {
                     kill_socket(client_socket);
                     break;
                 } else {
-                    client_query_parser.set_query(query_buffer);
-
-                    auto action = client_query_parser.parse();
-
-                    fmt::print("Received query client: {}\n", query_buffer);
-                    fmt::print("Action is: {}\n", action.get_type_as_string());
-
-                    if (action.get_type() == Language::Action::DATABASE_WHICH) {
-                        LOG_INFO("Server::t_listen::client_thread", "Getting which database {}", client_database)
-                        Response response(Response::DATA, fmt::format("{}", client_database));
-                        response.send(client_socket);
-                    } else if (action.get_type() == Language::Action::DATABASE_SELECT) {
-                        client_database = action.get_database_index();
-                        LOG_INFO("Server::t_listen::client_thread", "Setting selected database to {}", client_database)
-                        Response response(Response::DATA, fmt::format("{}", client_database));
-                        response.send(client_socket);
-                    } else {
-                        Response response(Response::DATA, fmt::format("Action {} is not yet implemented", action.get_type_as_string()));
-                        response.send(client_socket);
-                    }
+                    auto res = m_datastore->handle_query(client_socket, query_buffer);
+                    res.send(client_socket);
                 }
             }
 

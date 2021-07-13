@@ -6,22 +6,24 @@ namespace Network {
 
 class Response {
 public:
-  enum Type {
-    DATA,
-    SYNTAX_ERROR,
-  };
+    enum Type {
+        DATA,
+        SYNTAX_ERROR,
+        INVALID_DATABASE,
+        TABLE_CREATED,
+    };
 
-  Response(Type type, std::string data);
-  Response(Type type);
+    Response(Type type, std::string data);
+    Response(Type type);
 
-  bool send(int client_socket);
+    bool send(int client_socket);
 
 private:
-  char *get_type_as_string();
+    char* get_type_as_string();
 
 private:
-  Type m_type;
-  std::string m_data;
+    Type m_type;
+    std::string m_data;
 };
 
 } // namespace Network

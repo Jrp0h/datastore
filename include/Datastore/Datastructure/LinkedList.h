@@ -148,6 +148,15 @@ public:
         return nullptr;
     }
 
+    LinkedListNode<T>* get_node_by_key_or_insert(std::string key, T data) {
+        LinkedListNode<T> node = get_by_key(key);
+
+        if (node == nullptr)
+            return set_value_by_key(key, data);
+
+        return node;
+    }
+
     LinkedList<T>* get_head() {
         return m_head;
     }

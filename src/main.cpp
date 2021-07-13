@@ -18,11 +18,17 @@
 int main() {
 
     Datastore ds;
+    Network::Server server(&ds);
 
-    // fmt::print("{}\n", sizeof(char));
+    ds.on_boot([&server] {
+        server.start();
+    });
+
+    ds.on_shutdown([&server] {
+        server.start();
+    });
 
     ds.boot();
-
     std::cin.get();
     // Language::Lexer l("TO user_auth CREATE user_id=\"5\", auth_token=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\";");
     // Language::Lexer l("DEFINE TABLE dead_drop:450 WITH message MOD :ONE_TOUCH;");
